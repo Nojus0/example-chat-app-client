@@ -1,0 +1,12 @@
+@use "./src/styles/Scrollbar";
+
+* {
+    font-family: "Montserrat", sans-serif;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+}

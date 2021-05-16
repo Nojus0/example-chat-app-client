@@ -1,0 +1,24 @@
+.inputBar {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+    justify-content: center;
+    input {
+        border: none;
+        margin: 1rem;
+
+        background: #eaeaea;
+        border-radius: 45rem;
+        padding: 1rem;
+        width: clamp(0em, 100%, 50em);
+        outline: none;
+        transition: width 200ms ease;
+        &:focus-visible {
+            width: clamp(50em, 100%, 60em);
+        }
+    }
+}
