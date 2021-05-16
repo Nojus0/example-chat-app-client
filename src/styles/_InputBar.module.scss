@@ -14,7 +14,7 @@
         background: #eaeaea;
         border-radius: 45rem;
         padding: 1rem;
-        width: clamp(0em, 100%, 50em);
+        width: clamp(1px, 100%, 50em);
         outline: none;
         transition: width 200ms ease;
         &:focus-visible {

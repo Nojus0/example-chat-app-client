@@ -28,12 +28,12 @@ function Messages() {
 
     useEffect(() => { // Verify if session valid
         if (cookies.auth == null) history.push("/login")
-        const io = SocketIO(`${process.env.SERVER_URL}:4000`);
+        const io = SocketIO(`${process.env.SERVER_URL}`);
         setIo(io);
         if (cookies.auth == null) return;
 
         axios({
-            url: `${process.env.SERVER_URL}:4000/api/verify?auth=${cookies.auth}`,
+            url: `${process.env.SERVER_URL}/api/verify?auth=${cookies.auth}`,
             method: "GET"
         }).then(e => {
             const data: IResponse = e.data;

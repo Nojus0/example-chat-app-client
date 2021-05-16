@@ -1,6 +1,5 @@
 import React from 'react'
 import { inputBar } from "../styles/_InputBar.module.scss";
-import { button } from "../styles/_Primitives.module.scss";
 
 interface IInputBarProps {
     setValue: React.Dispatch<React.SetStateAction<string>>,

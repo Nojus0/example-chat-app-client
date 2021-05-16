@@ -21,7 +21,7 @@ function Login() {
         if (password.length < 3 || username.length < 3) return setError("Invalid credentials");
 
         const response = await axios({
-            url: `${process.env.SERVER_URL}:4000/api/login?username=${username}&password=${password}`,
+            url: `${process.env.SERVER_URL}/api/login?username=${username}&password=${password}`,
             method: "GET",
         });
 
