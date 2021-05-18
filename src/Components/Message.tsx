@@ -1,5 +1,6 @@
 import React from 'react'
 import { background, Sender, backgroundSender } from "../styles/_Message.module.scss";
+import LoadingBar from './LoadingBar';
 
 export interface IMessage {
     sender: string

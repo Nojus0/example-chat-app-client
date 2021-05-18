@@ -5,22 +5,25 @@ import { useHistory } from 'react-router';
 import InputBar from '../Components/InputBar';
 import Message, { IMessage } from '../Components/Message';
 import { IResponse, ISendMessage } from '../interfaces/IReponse';
-import { browser } from "../styles/_Messages.module.scss"
+import { browser, loaderBox } from "../styles/_Messages.module.scss"
 import SocketIO, { Socket } from "socket.io-client"
+import LoadingBar from '../Components/LoadingBar';
+import { ILoadingBarProps } from "../Components/LoadingBar"
 
 function Messages() {
 
     const [cookies, setCookies, delCookie] = useCookies();
 
-    const [inputval, setInputval] = useState("");   
+    const [inputval, setInputval] = useState("");
     const [io, setIo] = useState<Socket>();
-    const [messages, setMessages] = useState<IMessage[]>([]);   
+    const [messages, setMessages] = useState<IMessage[]>([]);
+    const [message, setMessage] = useState<ILoadingBarProps>({ text: "" });
 
     const history = useHistory();
-    const bottomRef = useRef(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        bottomRef.current.scrollIntoView() 
+        bottomRef.current.scrollIntoView();
         // Scroll to bottom
         // { behavior: "smooth" }, when spam, doesn't scroll
     }, [messages])
@@ -32,15 +35,33 @@ function Messages() {
         setIo(io);
         if (cookies.auth == null) return;
 
+        setMessage(prev => ({ ...prev, color: undefined, text: "Connecting to server", showSpinner: true }));
+
+        setTimeout(() => {
+            if (!io.connected)
+                setMessage(prev => ({ ...prev, color: undefined, text: "Starting server", showSpinner: true }));
+        }, 1000);
+
         axios({
             url: `${process.env.SERVER_URL}/api/verify?auth=${cookies.auth}`,
             method: "GET"
         }).then(e => {
             const data: IResponse = e.data;
+
             if (!data.success) {
                 delCookie("auth");
                 history.push("/login")
             }
+        })
+
+        io.on("connect", () => {
+            setMessage(prev => ({ ...prev, text: "Connected", color: "#0d9900", showSpinner: false }));
+
+            setTimeout(() => setMessage(prev => ({ ...prev, text: "" })), 1000);
+        })
+
+        io.on("connect_error", () => {
+            setMessage(prev => ({ ...prev, text: "Failed to connect", color: undefined, showSpinner: false }))
         })
 
         io.on("new:message", (message: IMessage) => {
@@ -59,13 +80,19 @@ function Messages() {
     }
 
     return (
-        <div className={browser}>
-            {
-                messages.map((m, index) => <Message key={index} {...m} />)
-            }
-            <div ref={bottomRef}></div>
-            <InputBar val={inputval} keyUp={sendMessage} setValue={setInputval} />
-        </div>
+        <>
+            <div className={browser}>
+                {
+                    messages.map((m, index) => <Message key={index} {...m} />)
+                }
+                <div ref={bottomRef}></div>
+            </div>
+            <InputBar val={inputval} keyUp={sendMessage} setValue={setInputval}>
+                {
+                    message.text !== "" && <LoadingBar classes={`${loaderBox}`} color={message.color} showSpinner={message.showSpinner} text={message.text} />
+                }
+            </InputBar>
+        </>
     )
 }
 
