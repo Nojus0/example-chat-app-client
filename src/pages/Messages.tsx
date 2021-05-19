@@ -5,7 +5,7 @@ import { useHistory } from 'react-router';
 import InputBar from '../Components/InputBar';
 import Message, { IMessage } from '../Components/Message';
 import { IResponse, ISendMessage } from '../interfaces/IReponse';
-import { browser, loaderBox } from "../styles/_Messages.module.scss"
+import { browser, loaderBox, _messages } from "../styles/_Messages.module.scss"
 import SocketIO, { Socket } from "socket.io-client"
 import LoadingBar from '../Components/LoadingBar';
 import { ILoadingBarProps } from "../Components/LoadingBar"
@@ -30,8 +30,12 @@ function Messages() {
 
 
     useEffect(() => { // Verify if session valid
+
         if (cookies.auth == null) history.push("/login")
-        const io = SocketIO(`${process.env.SERVER_URL}`);
+        const io = SocketIO(`${process.env.SERVER_URL}`, {
+            timeout: 30000
+        });
+
         setIo(io);
         if (cookies.auth == null) return;
 
@@ -80,19 +84,20 @@ function Messages() {
     }
 
     return (
-        <>
+        <div className={_messages}>
             <div className={browser}>
                 {
                     messages.map((m, index) => <Message key={index} {...m} />)
                 }
                 <div ref={bottomRef}></div>
             </div>
+            
             <InputBar val={inputval} keyUp={sendMessage} setValue={setInputval}>
                 {
                     message.text !== "" && <LoadingBar classes={`${loaderBox}`} color={message.color} showSpinner={message.showSpinner} text={message.text} />
                 }
             </InputBar>
-        </>
+        </div>
     )
 }
 
