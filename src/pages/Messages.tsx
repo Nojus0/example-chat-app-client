@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import InputBar from "../Components/InputBar";
 import Message, { IMessage } from "../Components/Message";
 import { IResponse } from "../interfaces/IReponse";
@@ -18,7 +18,7 @@ function Messages() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [message, setMessage] = useState<ILoadingBarProps>({ text: "" });
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ function Messages() {
   useEffect(() => {
     // Verify if session valid
 
-    if (cookies.auth == null) history.push("/login");
-    const io = SocketIO(`${process.env.SERVER_URL}`, {
+    if (cookies.auth == null) navigate("/login");
+    const io = SocketIO(`${import.meta.env.VITE_SERVER_URL}`, {
       timeout: 30000,
     });
 
@@ -56,14 +56,14 @@ function Messages() {
     }, 1000);
 
     axios({
-      url: `${process.env.SERVER_URL}/api/verify?auth=${cookies.auth}`,
+      url: `${import.meta.env.VITE_SERVER_URL}/api/verify?auth=${cookies.auth}`,
       method: "GET",
     }).then((e) => {
       const data: IResponse = e.data;
 
       if (!data.success) {
         delCookie("auth");
-        history.push("/login");
+        navigate("/login");
       }
     });
 

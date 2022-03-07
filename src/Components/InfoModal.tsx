@@ -1,4 +1,3 @@
-import React from 'react'
 import { warningText } from "../styles/_InfoModal.module.scss"
 
 function InfoModal({ text }) {

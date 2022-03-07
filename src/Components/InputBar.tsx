@@ -1,6 +1,4 @@
-import React from "react";
 import { inputBar } from "../styles/_InputBar.module.scss";
-import LoadingBar from "./LoadingBar";
 
 interface IInputBarProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;

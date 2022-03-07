@@ -1,4 +1,3 @@
-import React from 'react'
 import { background, loader } from "../styles/_LoadingBar.module.scss";
 
 export interface ILoadingBarProps {
